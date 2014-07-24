@@ -313,7 +313,7 @@ function calculateCoordinates3D(node){
     var index = node.parentNode.childNodes.indexOf(node);
     var numSibling = node.parentNode.childNodes.length;
     var theta = Math.PI * 2 * index / numSibling;
-    var radius = 8/node.depth/node.depth;
+    var radius = 12/node.depth/node.depth;
 
     // Y and Z have been switched for orientation reason
     // = better presentation to the camera
