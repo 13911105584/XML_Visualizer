@@ -23,11 +23,11 @@ function init(){
   document.body.appendChild(renderer.domElement);
 
   // light
-  var directionalLight = new THREE.DirectionalLight(0xffffff);
+  var directionalLight = new THREE.DirectionalLight(0xeeeeee);
   directionalLight.position.set(10, 10, 10);
   scene.add(directionalLight);
 
-  var ambient = new THREE.AmbientLight(0x333333);
+  var ambient = new THREE.AmbientLight(0x888888);
   scene.add(ambient);
 }
 
