@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE courses SYSTEM "courses.dtd">
+
+<courses>
+
+  <course code="GB21802">
+    <title>プログラミングチャレンジ</title>
+    <teacher>アランニャ クラウス</teacher>
+    <units>2.0</units>
+    <class_hours>
+      <class>
+        <day>Mon</day>
+        <period>3</period>
+      </class>
+      <class>
+        <day>Fri</day>
+        <period>3</period>
+      </class>
+    </class_hours>
+  </course>
+
+  <course code="GB30201">
+    <title>計算機アーキテクチャ</title>
+    <teacher>和田 耕一</teacher>
+    <units>2.0</units>
+    <class_hours>
+      <class>
+        <day>Tue</day>
+        <period>1</period>
+      </class>
+      <class>
+        <day>Tue</day>
+        <period>2</period>
+      </class>
+    </class_hours>
+  </course>
+
+  <course code="GB31111">
+    <title>並列処理アーキテクチャI</title>
+    <teacher>西川博昭</teacher>
+    <units>1.0</units>
+    <class_hours>
+      <class>
+        <day>Tue</day>
+        <period>3</period>
+      </class>
+    </class_hours>
+  </course>
+
+  <course code="GB31501">
+    <title>ソフトウェア工学</title>
+    <teacher>前田敦司</teacher>
+    <units>2.0</units>
+    <class_hours>
+      <class>
+        <day>Tue</day>
+        <period>5</period>
+      </class>
+      <class>
+        <day>Tue</day>
+        <period>6</period>
+      </class>
+    </class_hours>
+  </course>
+
+  <course code="GB21601">
+    <title>オートマトンと形式言語</title>
+    <teacher>南出靖彦</teacher>
+    <units>2.0</units>
+    <class_hours>
+      <class>
+        <day>Wed</day>
+        <period>1</period>
+      </class>
+      <class>
+        <day>Wed</day>
+        <period>2</period>
+      </class>
+    </class_hours>
+  </course>
+
+  <course code="GB36403">
+    <title>情報システム実験A</title>
+    <units>2.0</units>
+    <class_hours>
+      <class>
+        <day>Wed</day>
+        <period>3</period>
+      </class>
+      <class>
+        <day>Wed</day>
+        <period>4</period>
+      </class>
+      <class>
+        <day>Fri</day>
+        <period>4</period>
+      </class>
+      <class>
+        <day>Fri</day>
+        <period>5</period>
+      </class>
+    </class_hours>
+  </course>
+
+  <course code="GB30301">
+    <title>データベース概論I</title>
+    <teacher>北川 博之</teacher>
+    <units>2.0</units>
+    <class_hours>
+      <class>
+        <day>Thu</day>
+        <period>1</period>
+      </class>
+      <class>
+        <day>Thu</day>
+        <period>2</period>
+      </class>
+    </class_hours>
+  </course>
+
+  <course code="GB20101">
+    <title>プログラム言語論</title>
+    <teacher>亀山 幸義</teacher>
+    <units>2.0</units>
+    <class_hours>
+      <class>
+        <day>Thu</day>
+        <period>3</period>
+      </class>
+      <class>
+        <day>Thu</day>
+        <period>4</period>
+      </class>
+    </class_hours>
+  </course>
+
+  <course code="GB40301">
+    <title>ヒューマンインターフェース</title>
+    <teacher>田中 二郎</teacher>
+    <units>2.0</units>
+    <class_hours>
+      <class>
+        <day>Thu</day>
+        <period>5</period>
+      </class>
+      <class>
+        <day>Thu</day>
+        <period>6</period>
+      </class>
+    </class_hours>
+  </course>
+
+</courses>

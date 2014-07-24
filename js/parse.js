@@ -3,39 +3,42 @@
  */
 
 var rootNode;
-const NODE_WIDTH = 4;
-const LEVEL_HEIGHT = -8;
-const MIN_TREE_DISTANCE = 1;
 
 // Node object
 function Node(parentNode, depth){
+  // variables
   this.x = 0;
   this.y = depth;
-  this.mod = 0;
   this.depth = depth;
-  this.name = null;
-  this.value = null;
+  this.mod = 0;
+  this.name;
+  this.value;
   this.parentNode = parentNode;
   this.childNodes = [];
-  this.previousSibling = null;
-  this.nextSibling = null;
-  this.geometry = null;
+  this.previousSibling;
+  this.nextSibling;
+  this.geometry;
 
-  this.isLeaf = function(){ return this.childNodes.length === 0; }
-  this.isLeftMost = function(){ return this.previousSibling === null; }
-  this.isRightMost = function(){ return this.nextSibling === null; }
+  // methods
+  this.isLeaf = function(){ return this.childNodes.length === 0; };
+  this.isLeftMost = function(){ return this.previousSibling == undefined; };
+  this.isRightMost = function(){ return this.nextSibling == undefined; };
   this.getLeftMostChild = function(){
-    if(!this.isLeaf())
+    if(!this.isLeaf()){
       return this.childNodes[0];
-    else
+    }
+    else{
       return null;
-  }
+    }
+  };
   this.getRightMostChild = function(){
-    if(!this.isLeaf())
+    if(!this.isLeaf()){
       return this.childNodes[this.childNodes.length-1];
-    else
+    }
+    else{
       return null;
-  }
+    }
+  };
   this.show = function(){
     console.log("(" + this.x + ", " + this.y + ")");
     console.log("depth: " + this.depth);
@@ -48,32 +51,29 @@ function Node(parentNode, depth){
     console.log("nextSibling");
     console.log(this.nextSibling);
     console.log("==== show done ====\n");
-  }
+  };
 }
 
 // parse XML, create a tree and give it to the renderer
 function parseXML(xmlStr){
-  console.log(xmlStr);
-  var xmlDoc = $.parseXML(xmlStr);
-  var xmlDocumentNode = xmlDoc.documentElement;
+  var xmlDocumentNode = $.parseXML(xmlStr).documentElement;
   rootNode = copyTree(xmlDocumentNode, null, 0);
   firstWalk(rootNode);
-  thirdWalk(rootNode, rootNode.mod);
+  secondWalk(rootNode, rootNode.mod);
   printTree(rootNode);
-  console.log("======== print done ========\n");
 }
 
+// render the nodes on canvas
 function render3D(node){
   // leaf
-  node.show();
-  node.entity = addSphere(node.x * NODE_WIDTH, node.y * LEVEL_HEIGHT, 0, 1);
+  node.geometry = addSphere(node.x * NODE_WIDTH, node.y * LEVEL_HEIGHT, 0, 1);
   // branch
   if(!node.isLeaf()){
     for(var i=0; i<node.childNodes.length; i++){
       render3D(node.childNodes[i]);
     }
     for(var i=0; i<node.childNodes.length; i++){
-      addLine(node.entity.position, node.childNodes[i].entity.position);
+      addLine(node.geometry.position, node.childNodes[i].geometry.position);
     }
   }
 }
@@ -84,22 +84,32 @@ function copyTree(xmlNode, parentNode, depth){
   node.name = xmlNode.nodeName;
   // text node
   if(xmlNode.nodeType === 3){
-    node.value = xmlNode.nodeValue;
+    if(ignoreBlankNode && xmlNode.nodeValue.match(/\s*/)){
+      node = null;
+    }
+    else{
+      node.value = xmlNode.nodeValue;
+    }
   }
   // elelement node
   else if(xmlNode.nodeType === 1){
     // child nodes
     for(var child = xmlNode.firstChild; child != null; child = child.nextSibling){
-      node.childNodes.push(copyTree(child, node, depth + 1));
+      var childNode = copyTree(child, node, depth + 1);
+      if(childNode !== null){
+        node.childNodes.push(childNode);
+      }
     }
     // childs' siblings
     for(var i=0; i<node.childNodes.length; i++){
       // previous sibling
-      if(i>0)
+      if(i>0){
         node.childNodes[i].previousSibling = node.childNodes[i-1];
+      }
       // next sibling
-      if(i<node.childNodes.length-1)
+      if(i<node.childNodes.length-1){
         node.childNodes[i].nextSibling = node.childNodes[i+1];
+      }
     }
   }
   return node;
@@ -111,14 +121,14 @@ function printTree(node){
   node.show();
   // branch
   if(!node.isLeaf()){
-    for(var i=0; i<node.childNodes.length; i++)
+    for(var i=0; i<node.childNodes.length; i++){
       printTree(node.childNodes[i]);
+    }
   }
 }
 
 // first traversal
 function firstWalk(node){
-  console.log("firstWalk");
   // post order traversal
   for(var i=0; i<node.childNodes.length; i++){
     firstWalk(node.childNodes[i]);
@@ -126,15 +136,18 @@ function firstWalk(node){
 
   // if no children
   if(node.isLeaf()){
-    if(!node.isLeftMost())
+    if(!node.isLeftMost()){
       node.x = node.previousSibling.x + 1;
-    else
+    }
+    else{
       node.x = 0;
+    }
   }
   // if just one child
   else if (node.childNodes.length === 1){
-    if(node.isLeftMost())
+    if(node.isLeftMost()){
       node.x = node.childNodes[0].x;
+    }
     else{
       node.x = node.previousSibling.x + 1;
       node.mod = node.x - node.childNodes[0].x;
@@ -152,12 +165,12 @@ function firstWalk(node){
     }
   }
 
-  if(node.childNodes.length > 0 && !node.isLeftMost())
+  if(node.childNodes.length > 0 && !node.isLeftMost()){
     resolveConflicts(node);
+  }
 }
 
 function resolveConflicts(node){
-  console.log("resolveConflicts");
   var minDistance = MIN_TREE_DISTANCE;
   var shiftValue = 0;
 
@@ -175,11 +188,6 @@ function resolveConflicts(node){
     var max_nodeContour = Math.max.apply(null, Object.keys(nodeContour));
 
     for(var level = node.depth + 1; level <= Math.min(max_siblingContour, max_nodeContour); level++){
-      console.log("========called========");
-      console.log("max_node: " + max_nodeContour);
-      console.log("max_sibling: " + max_siblingContour);
-      console.log(nodeContour);
-      node.show();
       max_siblingContour = Math.max.apply(null, Object.keys(siblingContour));
       max_nodeContour = Math.max.apply(null, Object.keys(nodeContour));
       var distance = nodeContour[level] - siblingContour[level];
@@ -202,7 +210,6 @@ function resolveConflicts(node){
 }
 
 function centerNodesBetween(leftNode, rightNode){
-  console.log("centerNodesBetween");
   var rightIndex = rightNode.parentNode.childNodes.indexOf(rightNode);
   var leftIndex = leftNode.parentNode.childNodes.indexOf(leftNode);
 
@@ -222,16 +229,14 @@ function centerNodesBetween(leftNode, rightNode){
       middleNode.mod += offset;
 
       count++;
-      console.log("count++");
     }
 
     resolveConflicts(leftNode);
   }
 }
 
+// put the left contour for the nodes below into the given object
 function getLeftContour(node, modSum, contour){
-  console.log(contour);
-  console.log("getLeftContor");
   if(!contour.hasOwnProperty(node.depth))
     contour[node.depth] = node.x + modSum;
   else
@@ -243,13 +248,15 @@ function getLeftContour(node, modSum, contour){
     getLeftContour(node.childNodes[i], modSum, contour);
   }
 }
+
+// put the right contour for the nodes below into the given object
 function getRightContour(node, modSum, contour){
-  console.log(contour);
-  console.log("getRightContor");
-  if(!contour.hasOwnProperty(node.depth))
+  if(!contour.hasOwnProperty(node.depth)){
     contour[node.depth] = node.x + modSum;
-  else
+  }
+  else{
     contour[node.depth] = Math.max(contour[node.depth], node.x + modSum);
+  }
 
   modSum += node.mod;
 
@@ -258,12 +265,12 @@ function getRightContour(node, modSum, contour){
   }
 }
 
-function thirdWalk(node, modSum){
-  console.log("thirdWalk");
+// secondWalk determines the final x position of the nodes
+function secondWalk(node, modSum){
   node.x += modSum;
   modSum += node.mod;
 
   for(var i=0; i<node.childNodes.length; i++){
-    thirdWalk(node.childNodes[i], modSum);
+    secondWalk(node.childNodes[i], modSum);
   }
 }
