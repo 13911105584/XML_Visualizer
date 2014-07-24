@@ -1,27 +1,24 @@
 var renderer, scene, camera, controls;
 
-// list of spheres
-var spheres = [];
+// list of geometries
+var geometries = [];
 
-function main(){
-  init();
-  render();
+// geometry
+/*
+   addSphere(0, 0, 0, 3);
+   addSphere(-10, -10, 0, 3);
+   addSphere(10, -10, 0, 3);
+   addSphere(10, -20, 0, 3);
+   addSphere(2, -20, 0, 3);
+   addSphere(18, -20, 0, 3);
 
-  // geometry
-  addSphere(0, 0, 0, 3);
-  addSphere(-10, -10, 0, 3);
-  addSphere(10, -10, 0, 3);
-  addSphere(10, -20, 0, 3);
-  addSphere(2, -20, 0, 3);
-  addSphere(18, -20, 0, 3);
-
-  // line
-  addLine(spheres[0].position, spheres[1].position);
-  addLine(spheres[0].position, spheres[2].position);
-  addLine(spheres[2].position, spheres[3].position);
-  addLine(spheres[2].position, spheres[4].position);
-  addLine(spheres[2].position, spheres[5].position);
-}
+// line
+addLine(spheres[0].position, spheres[1].position);
+addLine(spheres[0].position, spheres[2].position);
+addLine(spheres[2].position, spheres[3].position);
+addLine(spheres[2].position, spheres[4].position);
+addLine(spheres[2].position, spheres[5].position);
+*/
 
 function init(){
   scene = new THREE.Scene();
@@ -60,15 +57,17 @@ function render(){
 // add a sphere to the scene
 function addSphere(x, y, z, radius){
   var sphere = new THREE.SphereGeometry(radius, 32, 16);
-  var material = new THREE.MeshPhongMaterial({
+  var material = new THREE.MeshLambertMaterial({
     color: 0xffffff, ambient: 0xffffff,
       specular: 0xcccccc, shininess: 50, metal: true,
   });
   var mesh = new THREE.Mesh(sphere, material);
   mesh.position.set(x, y, z);
 
-  spheres.push(mesh);
+  geometries.push(mesh);
   scene.add(mesh);
+
+  return mesh;
 }
 
 // add a line to the scene
@@ -82,5 +81,12 @@ function addLine(begin, end){
   });
 
   var line = new THREE.Line(geometry, material);
+  geometries.push(line);
   scene.add(line);
+}
+
+function removeAllGeometry(){
+  for(var i=geometries.length; i>0; i--){
+    scene.remove(geometries[i-1]);
+  }
 }
