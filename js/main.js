@@ -4,7 +4,7 @@ var ignoreBlankNode = true;
 var NODE_WIDTH = 4;
 var LEVEL_HEIGHT = -8;
 var MIN_TREE_DISTANCE = 1;
-var SPHERE_RADIUS = 0.5;
+var SPHERE_RADIUS = 0.3;
 
 function main(){
   init();
