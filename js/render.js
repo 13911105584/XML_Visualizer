@@ -3,23 +3,6 @@ var renderer, scene, camera, controls;
 // list of geometries
 var geometries = [];
 
-// geometry
-/*
-   addSphere(0, 0, 0, 3);
-   addSphere(-10, -10, 0, 3);
-   addSphere(10, -10, 0, 3);
-   addSphere(10, -20, 0, 3);
-   addSphere(2, -20, 0, 3);
-   addSphere(18, -20, 0, 3);
-
-// line
-addLine(spheres[0].position, spheres[1].position);
-addLine(spheres[0].position, spheres[2].position);
-addLine(spheres[2].position, spheres[3].position);
-addLine(spheres[2].position, spheres[4].position);
-addLine(spheres[2].position, spheres[5].position);
-*/
-
 function init(){
   scene = new THREE.Scene();
 
@@ -29,7 +12,7 @@ function init(){
   var near = 1;
   var far = 1000;
   camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-  camera.position.set(5, 5, 50);
+  camera.position.set(0, 0, 50);
 
   // controls
   controls = new THREE.TrackballControls(camera);

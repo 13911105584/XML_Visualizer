@@ -1,7 +1,3 @@
-/*
- * Processing the tree
- */
-
 var rootNode;
 
 // Node object
@@ -9,6 +5,7 @@ function Node(parentNode, depth){
   // variables
   this.x = 0;
   this.y = depth;
+  this.z = 0;
   this.depth = depth;
   this.mod = 0;
   this.name;
@@ -18,6 +15,15 @@ function Node(parentNode, depth){
   this.previousSibling;
   this.nextSibling;
   this.geometry;
+
+  // (x, y, z) for planar presentation
+  this.x_2D = 0;
+  this.y_2D = 0;
+  this.z_2D = 0;
+  // (x, y, z) for 3D presentation
+  this.x_3D = 0;
+  this.y_3D = 0;
+  this.z_3D = 0;
 
   // methods
   this.isLeaf = function(){ return this.childNodes.length === 0; };
@@ -60,23 +66,12 @@ function parseXML(xmlStr){
   rootNode = copyTree(xmlDocumentNode, null, 0);
   firstWalk(rootNode);
   secondWalk(rootNode, rootNode.mod);
+  calculateCoordinates2D(rootNode);
+  calculateCoordinates3D(rootNode);
+  renderTree(rootNode);
   printTree(rootNode);
 }
 
-// render the nodes on canvas
-function render3D(node){
-  // leaf
-  node.geometry = addSphere(node.x * NODE_WIDTH, node.y * LEVEL_HEIGHT, 0, 1);
-  // branch
-  if(!node.isLeaf()){
-    for(var i=0; i<node.childNodes.length; i++){
-      render3D(node.childNodes[i]);
-    }
-    for(var i=0; i<node.childNodes.length; i++){
-      addLine(node.geometry.position, node.childNodes[i].geometry.position);
-    }
-  }
-}
 
 // create self-defined tree structure from XML DOM
 function copyTree(xmlNode, parentNode, depth){
@@ -235,7 +230,6 @@ function centerNodesBetween(leftNode, rightNode){
   }
 }
 
-// put the left contour for the nodes below into the given object
 function getLeftContour(node, modSum, contour){
   if(!contour.hasOwnProperty(node.depth))
     contour[node.depth] = node.x + modSum;
@@ -249,7 +243,6 @@ function getLeftContour(node, modSum, contour){
   }
 }
 
-// put the right contour for the nodes below into the given object
 function getRightContour(node, modSum, contour){
   if(!contour.hasOwnProperty(node.depth)){
     contour[node.depth] = node.x + modSum;
@@ -272,5 +265,70 @@ function secondWalk(node, modSum){
 
   for(var i=0; i<node.childNodes.length; i++){
     secondWalk(node.childNodes[i], modSum);
+  }
+}
+
+// render the tree on canvas
+function renderTree(node){
+  if(flag_3D){
+    render3D(rootNode);
+  }
+  else{
+    render2D(rootNode);
+  }
+}
+function render2D(node){
+  node.geometry = addSphere(node.x_2D, node.y_2D, node.z_2D, SPHERE_RADIUS);
+  for(var i=0; i<node.childNodes.length; i++){
+    render2D(node.childNodes[i]);
+  }
+  for(var i=0; i<node.childNodes.length; i++){
+    addLine(node.geometry.position, node.childNodes[i].geometry.position);
+  }
+}
+function render3D(node){
+  node.geometry = addSphere(node.x_3D, node.y_3D, node.z_3D, SPHERE_RADIUS);
+  for(var i=0; i<node.childNodes.length; i++){
+    render3D(node.childNodes[i]);
+  }
+  for(var i=0; i<node.childNodes.length; i++){
+    addLine(node.geometry.position, node.childNodes[i].geometry.position);
+  }
+}
+
+function calculateCoordinates2D(node){
+  // leaf
+  node.x_2D = (node.x - rootNode.x) * NODE_WIDTH;
+  node.y_2D = (node.y - rootNode.y) * LEVEL_HEIGHT;
+  // branch
+  if(!node.isLeaf()){
+    for(var i=0; i<node.childNodes.length; i++){
+      calculateCoordinates2D(node.childNodes[i]);
+    }
+  }
+}
+
+function calculateCoordinates3D(node){
+  if(node.parentNode != undefined){
+    var index = node.parentNode.childNodes.indexOf(node);
+    var numSibling = node.parentNode.childNodes.length;
+    var theta = Math.PI * 2 * index / numSibling;
+    var radius = 8/node.depth/node.depth;
+
+    // Y and Z have been switched for orientation reason
+    // = better presentation to the camera
+    var polarX = radius * Math.cos(theta) + node.parentNode.x_3D;
+    var polarZ = radius * Math.sin(theta) + node.parentNode.z_3D;
+
+    node.x_3D = polarX;
+    node.y_3D = -8*Math.log(node.depth+1);
+    node.z_3D = polarZ;
+
+  }
+
+  if(!node.isLeaf()){
+    for(var i=0; i<node.childNodes.length; i++){
+      calculateCoordinates3D(node.childNodes[i]);
+    }
   }
 }

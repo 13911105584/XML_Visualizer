@@ -10,3 +10,9 @@ input#xml_input {
   top: 20px;
   left: 20px;
 }
+
+button#toggle3D {
+  position: absolute;
+  top: 60px;
+  left: 20px;
+}

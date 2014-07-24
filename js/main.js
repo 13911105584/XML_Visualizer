@@ -1,15 +1,14 @@
 // control variables
-var flag_3D = true;
+var flag_3D = false;
 var ignoreBlankNode = true;
 var NODE_WIDTH = 4;
 var LEVEL_HEIGHT = -8;
 var MIN_TREE_DISTANCE = 1;
+var SPHERE_RADIUS = 0.5;
 
 function main(){
-  if(flag_3D){
-    init();
-    render();
-  }
+  init();
+  render();
 }
 
 // get file from html input
@@ -22,8 +21,12 @@ function readInputFile(){
 var reader = new FileReader();
 reader.onload = function(e){
   parseXML(reader.result);
-  if(flag_3D){
-    removeAllGeometry();
-    render3D(rootNode);
-  }
+  removeAllGeometry();
+  renderTree(rootNode);
+};
+
+function toggle3D(){
+  removeAllGeometry();
+  flag_3D = !flag_3D;
+  renderTree(rootNode);
 }
