@@ -1,6 +1,8 @@
 XML_Visualizer
 ==============
 
-3D visualizer for XML on the web browser.
+3D visualizer for XML on a web browser, utilizing Reingold-Tilford
+algorithm and its 3D enhancement.
 
-This web application is hosted at http://www.coins.tsukuba.ac.jp/~s1211347/XML_Visualizer/
+This web application is hosted at
+https://shinkbr.github.io/XML_Visualizer/
