@@ -6,9 +6,16 @@ var LEVEL_HEIGHT = -8;
 var MIN_TREE_DISTANCE = 1;
 var SPHERE_RADIUS = 0.3;
 
+var xhr = new XMLHttpRequest();;
+xhr.onload = function(e){
+  parseXML(xhr.responseText);
+};
+
 function main(){
   init();
   render();
+  xhr.open("GET", "xml/a.xml", false);
+  xhr.send();
 }
 
 // get file from html input
